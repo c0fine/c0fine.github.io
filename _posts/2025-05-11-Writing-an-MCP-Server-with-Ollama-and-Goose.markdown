@@ -1,10 +1,12 @@
 This blog will walk you though setting up all of the required dependencies to build your own MCP server to work with open source tools. 
-# Installing dependencies 
 
-## Homebrew
+## Installing dependencies 
+
+### Homebrew
 1. If you don't already have it install homebrew 
 `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` . If you can't run the command visit https://github.com/Homebrew/brew/releases to use the installer instead.
-## Ollama
+
+### Ollama
 1. Install `Ollama` 
 	either via downloading the app at https://ollama.com/download or `brew install ollama`
 2. Pull down the model you want to use. This blog will use `llama3.1:8b` as most M-Series should be able to handle it but the largest **instruct** model you can comfortably run is probably best. I'll put out a new blog soon with performance comparisons with various Ollama models
@@ -13,12 +15,14 @@ This blog will walk you though setting up all of the required dependencies to bu
 	1. `ollama serve`
 4. Validate ollama server is running
 	1. `localhost:11434` which should show `Ollama is running` in the browser
-## MCP and Other Dependencies 
+
+### MCP and Other Dependencies 
 1. Install `uv`
 	1. `curl -LsSf https://astral.sh/uv/install.sh | sh` if that doesn't work visit https://docs.astral.sh/uv/getting-started/installation/#standalone-installer for alternatives
 2. Node.js is required for various development tools 
 	1. `brew install node@22` If that doesn't work visit https://nodejs.org/en/download for alternatives
-## Installing and Setting Up Goose
+
+### Installing and Setting Up Goose
 1. Install the GUI app for MacOS
 	1. Navigate to https://block.github.io/goose/docs/getting-started/installation and select download under Goose Desktop. if you're not on Mac you'll have to use the CLI version. the server we're going to write will work but I'm not going to over how to add it to CLI Goose in this post. 
 2. Add Ollama to Goose
@@ -28,7 +32,8 @@ This blog will walk you though setting up all of the required dependencies to bu
 	2. Click browse to the right of the `Models` header. Right now it's probably only showing `quen2.5`
 	3. Under `Add Model` click the `Select provider` dropdown and click `Ollama`
 	4. Under `Model name` enter `llama3.1:8b`
-# Setting up the Repo
+
+### Setting up the Repo
 Make sure whenever we're naming things (indicated by side carrots) you use a meaningful name. The agent will be able to read all of the names and it will contribute to the context that the model uses to make decisions. Especially with open-source clients and models it will make it less useable with bad nomenclature 
 1. Initialize the repo
 	1. run `uv init <reponame>` 
@@ -45,7 +50,7 @@ Make sure whenever we're naming things (indicated by side carrots) you use a mea
 7. Create your server file 
 	1. `touch server.py`
 
-# Add template code
+## Add template code
 There is some parts that every MCP server write should have. These things make it easier for the model to understand your code and improve its performance. 
 Make sure when you write your tools (the functions annotated with `@mcp.tool()`) must be explicitly typed, must be meaningfully named, and must have really detailed docstrings (the comments in the triple quotes). The LLM consumes this information as added context to create better responses.
 ```
@@ -74,7 +79,7 @@ except Exception as e:
 	raise McpError(ErrorData(INTERNAL_ERROR, f"Unexpected error: {str(e)}")) from e
 ```
 
-# Testing your Code
+## Testing your Code
 MCP provides a development environment to ensure your tool responds as expected without dealing with the added variance from the AI model. 
 1. In the directory with `server.py` run 
 	1. `npx @modelcontextprotocol/inspector uv run server.py`
@@ -85,7 +90,8 @@ MCP provides a development environment to ensure your tool responds as expected 
 6. Click `List Tools`
 7. It should then list the tools 
 8. For each tool provide it arguments and press run to make sure it works
-# Add your server to Goose
+
+## Add your server to Goose
 1. Navigate back to the settings page
 2. Under extensions click `Add custom extension`
 3. Under `Type` select `StandardIO`
